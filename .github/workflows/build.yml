@@ -1,0 +1,47 @@
+# Builds the CueZK installers for Windows, Mac and Linux on GitHub's computers.
+#
+#  • Every change pushed to main: the installers are attached to that run (Actions → the run → Artifacts) to try out.
+#  • To release a version: Actions → "Build CueZK desktop" → Run workflow → tick "Make a release" → Run.
+#    The installers go into a DRAFT release named after the version in package.json. Check it, then press Publish.
+#    Once it's published, CueZK on people's computers updates itself.
+name: Build CueZK desktop
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Make a release (a draft you then publish)'
+        type: boolean
+        default: false
+permissions:
+  contents: write
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Build the installers
+        run: npx electron-builder --publish ${{ inputs.release && 'always' || 'never' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CueZK-${{ runner.os }}
+          if-no-files-found: ignore
+          path: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*-mac.zip
+            dist/*.AppImage
+            dist/*.deb
