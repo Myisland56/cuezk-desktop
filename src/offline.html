@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:">
+<title>CueZK</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #0b1220; color: #e5e7eb; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { height: 100%; display: grid; place-items: center; text-align: center; padding: 1rem; box-sizing: border-box; }
+  .box { max-width: 26rem; }
+  .ic { font-size: 3rem; }
+  h1 { font-size: 1.4rem; margin: 0.5rem 0; }
+  p { color: #9ca3af; line-height: 1.5; }
+  button { margin: 0.3rem; padding: 0.65rem 1.2rem; border-radius: 999px; border: 1px solid #334155; background: #1e293b; color: #fff; font: inherit; cursor: pointer; }
+  button.primary { background: #2563eb; border-color: #2563eb; }
+  small { display: block; margin-top: 1rem; color: #64748b; }
+</style>
+</head>
+<body>
+<main><div class="box">
+  <div class="ic">📡</div>
+  <h1>CueZK can't connect</h1>
+  <p>Check that this computer is online. If other websites work, your network may be blocking CueZK: try the backup address.</p>
+  <button class="primary" id="again">Try again</button>
+  <button id="backup">Use the backup address</button>
+  <small id="why"></small>
+</div></main>
+<script>
+  var q = new URLSearchParams(location.search);
+  document.getElementById('why').textContent = q.get('code') ? 'Error ' + q.get('code') : '';
+  document.getElementById('again').onclick = function () { window.cuezkDesktop.retry(false); };
+  document.getElementById('backup').onclick = function () { window.cuezkDesktop.retry(true); };
+  setInterval(function () { if (navigator.onLine) window.cuezkDesktop.retry(false); }, 30000);
+  window.addEventListener('online', function () { window.cuezkDesktop.retry(false); });
+</script>
+</body>
+</html>

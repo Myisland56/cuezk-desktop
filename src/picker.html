@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:">
+<title>Share your screen</title>
+<style>
+  body { margin: 0; background: #0b1220; color: #e5e7eb; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { padding: 1rem 1.2rem 0.4rem; } h1 { margin: 0; font-size: 1.15rem; } p { margin: 0.3rem 0 0; color: #9ca3af; font-size: 0.9rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0.8rem; padding: 1rem 1.2rem; max-height: 400px; overflow-y: auto; }
+  button.src { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.5rem; border-radius: 12px; border: 2px solid #1e293b; background: #111827; color: #e5e7eb; font: inherit; cursor: pointer; text-align: left; }
+  button.src:hover, button.src:focus { border-color: #2563eb; outline: none; }
+  button.src img { width: 100%; aspect-ratio: 16 / 10; object-fit: contain; background: #000; border-radius: 8px; }
+  button.src span { font-size: 0.82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  footer { padding: 0 1.2rem 1rem; text-align: right; }
+  footer button { padding: 0.55rem 1.1rem; border-radius: 999px; border: 1px solid #334155; background: #1e293b; color: #fff; font: inherit; cursor: pointer; }
+</style>
+</head>
+<body>
+<header><h1>🖥 Share your screen</h1><p>Choose your whole screen or one window. The other person sees it until you press Stop sharing.</p></header>
+<div class="grid" id="grid"><p style="padding:1rem">Loading…</p></div>
+<footer><button id="cancel">Cancel</button></footer>
+<script>
+  var grid = document.getElementById('grid');
+  window.cuezkDesktop.sources().then(function (list) {
+    grid.innerHTML = '';
+    list.forEach(function (s) {
+      var b = document.createElement('button'); b.className = 'src';
+      var im = document.createElement('img'); im.src = s.thumb; im.alt = '';
+      var t = document.createElement('span'); t.textContent = s.name;
+      b.appendChild(im); b.appendChild(t);
+      b.onclick = function () { window.cuezkDesktop.pick(s.id); window.close(); };
+      grid.appendChild(b);
+    });
+    var first = grid.querySelector('button'); if (first) first.focus();
+  });
+  document.getElementById('cancel').onclick = function () { window.cuezkDesktop.pick(null); window.close(); };
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { window.cuezkDesktop.pick(null); window.close(); } });
+</script>
+</body>
+</html>

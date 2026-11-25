@@ -1,0 +1,104 @@
+{
+  "name": "cuezk-desktop",
+  "productName": "CueZK",
+  "version": "1.0.0",
+  "description": "CueZK for Windows, Mac and Linux: private, end-to-end encrypted messages and calls from OnCue.",
+  "author": "OnCue (NeCoSys) <myislandsas@gmail.com>",
+  "homepage": "https://cuezk.com",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --publish never",
+    "release": "electron-builder --publish always"
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "app.cuezk.desktop",
+    "productName": "CueZK",
+    "copyright": "\u00a9 OnCue",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Myisland56",
+        "repo": "cuezk-desktop",
+        "releaseType": "draft"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "artifactName": "CueZK-Setup-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "CueZK",
+      "runAfterFinish": true
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
+      "category": "public.app-category.social-networking",
+      "icon": "build/icon.png",
+      "identity": null,
+      "hardenedRuntime": false,
+      "artifactName": "CueZK-${version}-mac.${ext}",
+      "extendInfo": {
+        "NSCameraUsageDescription": "CueZK uses the camera for video calls.",
+        "NSMicrophoneUsageDescription": "CueZK uses the microphone for calls and voice messages."
+      }
+    },
+    "dmg": {
+      "title": "CueZK"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Network;InstantMessaging",
+      "icon": "build/icon.png",
+      "artifactName": "CueZK-${version}-${arch}.${ext}",
+      "maintainer": "OnCue <myislandsas@gmail.com>"
+    }
+  }
+}
